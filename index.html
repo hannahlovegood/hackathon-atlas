@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<meta name="description" content="全球黑客松地图 · 实时聚合 Devpost / MLH / ETHGlobal / HackerEarth 的真实黑客松，按时间、国家、类别、时长、奖金筛选。" />
+<meta property="og:title" content="Hackathon Atlas · 全球黑客松地图" />
+<meta property="og:description" content="每日自动更新的全球黑客松雷达：世界地图 + 多维筛选。" />
+<title>Hackathon Atlas · 全球黑客松地图</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='none' stroke='%2322d3ee' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%2322d3ee'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+
+<style>
+:root{
+  --bg:#060a13; --bg-2:#0a1020; --panel:rgba(13,20,38,.88); --panel-solid:#0d1426;
+  --line:rgba(94,120,180,.16); --line-2:rgba(94,120,180,.28);
+  --ink:#e6edf8; --muted:#8b9bb8; --faint:#5a6a8a;
+  --cyan:#22d3ee; --cyan-soft:rgba(34,211,238,.12); --violet:#8b5cf6; --amber:#fbbf24; --rose:#fb7185; --green:#34d399;
+  --glow:0 0 18px rgba(34,211,238,.35);
+  --r:14px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Inter,Roboto,sans-serif;
+  --mono:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; font-family:var(--font); color:var(--ink); background:var(--bg);
+  -webkit-font-smoothing:antialiased; overflow:hidden;
+}
+/* 背景网格纹理 */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(1200px 600px at 75% -10%, rgba(139,92,246,.10), transparent 60%),
+    radial-gradient(900px 500px at -5% 110%, rgba(34,211,238,.07), transparent 60%);
+}
+
+/* ---------- 顶栏 ---------- */
+header{
+  height:58px; display:flex; align-items:center; gap:14px; padding:0 18px;
+  background:linear-gradient(180deg, rgba(13,20,38,.98), rgba(13,20,38,.92));
+  border-bottom:1px solid var(--line-2); position:relative; z-index:1300;
+  backdrop-filter:blur(10px);
+}
+.brand{display:flex; align-items:center; gap:11px; min-width:0;}
+.logo{
+  width:36px; height:36px; border-radius:10px; flex:none; position:relative;
+  background:radial-gradient(circle at 30% 30%, rgba(34,211,238,.25), rgba(139,92,246,.2)), #0c1730;
+  border:1px solid rgba(34,211,238,.4); box-shadow:var(--glow);
+  display:flex; align-items:center; justify-content:center;
+}
+.logo svg{width:20px; height:20px;}
+.brand h1{font-size:15.5px; font-weight:700; margin:0; letter-spacing:.3px; white-space:nowrap;}
+.brand h1 em{font-style:normal; color:var(--cyan);}
+.brand p{font-size:10.5px; color:var(--faint); margin:2px 0 0; white-space:nowrap; letter-spacing:.5px;}
+.spacer{flex:1;}
+.live{
+  display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted);
+  font-family:var(--mono); padding:6px 12px; border:1px solid var(--line-2); border-radius:999px;
+  background:rgba(6,10,19,.6); white-space:nowrap;
+}
+.live .dot{width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite;}
+@keyframes pulse{50%{opacity:.4;}}
+.gh{
+  display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);
+  text-decoration:none; padding:7px 12px; border:1px solid var(--line-2); border-radius:9px; transition:.16s;
+}
+.gh:hover{color:var(--cyan); border-color:rgba(34,211,238,.5);}
+.gh svg{width:14px; height:14px; fill:currentColor;}
+
+/* ---------- 主体 ---------- */
+.app{display:flex; height:calc(100vh - 58px); height:calc(100dvh - 58px); position:relative; z-index:1;}
+
+/* 侧栏 */
+.sidebar{
+  width:396px; flex:none; background:var(--panel); border-right:1px solid var(--line-2);
+  display:flex; flex-direction:column; min-height:0; backdrop-filter:blur(14px); position:relative; z-index:1200;
+}
+.controls{padding:14px 16px 4px; overflow-y:auto; flex:0 1 auto; max-height:62%;}
+.controls::-webkit-scrollbar,.list::-webkit-scrollbar{width:7px;}
+.controls::-webkit-scrollbar-thumb,.list::-webkit-scrollbar-thumb{background:#243252; border-radius:8px;}
+
+.stats{display:flex; gap:8px; margin-bottom:13px;}
+.stat{
+  flex:1; background:linear-gradient(180deg, rgba(34,211,238,.06), rgba(13,20,38,.4));
+  border:1px solid var(--line); border-radius:11px; padding:9px 8px 8px; text-align:center; position:relative; overflow:hidden;
+}
+.stat::after{content:""; position:absolute; top:0; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,rgba(34,211,238,.6),transparent);}
+.stat b{display:block; font-size:19px; font-weight:700; line-height:1.15; color:var(--cyan); font-family:var(--mono);}
+.stat span{font-size:10.5px; color:var(--muted); letter-spacing:.4px;}
+
+.search{position:relative; margin-bottom:13px;}
+.search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; stroke:var(--faint); fill:none;}
+.search input{
+  width:100%; padding:10px 12px 10px 35px; border:1px solid var(--line-2); border-radius:10px;
+  font-size:13px; font-family:inherit; background:rgba(6,10,19,.65); color:var(--ink); transition:.16s;
+}
+.search input::placeholder{color:var(--faint);}
+.search input:focus{outline:none; border-color:var(--cyan); box-shadow:0 0 0 3px rgba(34,211,238,.12);}
+
+.fgroup{margin-bottom:13px;}
+.flabel{
+  font-size:10.5px; font-weight:650; color:var(--faint); letter-spacing:1.2px; margin-bottom:7px;
+  text-transform:uppercase; display:flex; align-items:center; gap:7px;
+}
+.flabel::after{content:""; flex:1; height:1px; background:var(--line);}
+.chips{display:flex; flex-wrap:wrap; gap:6px;}
+.chip{
+  font-family:inherit; font-size:12px; color:var(--muted); background:rgba(6,10,19,.55);
+  border:1px solid var(--line-2); border-radius:999px; padding:5.5px 11px; cursor:pointer;
+  transition:.14s; display:inline-flex; align-items:center; gap:6px; line-height:1;
+}
+.chip:hover{border-color:rgba(34,211,238,.45); color:var(--ink);}
+.chip.active{
+  background:linear-gradient(135deg, rgba(34,211,238,.18), rgba(139,92,246,.18));
+  border-color:var(--cyan); color:#dffaff; box-shadow:0 0 12px rgba(34,211,238,.25);
+}
+.chip .n{font-family:var(--mono); font-size:10.5px; color:var(--faint);}
+.chip.active .n{color:rgba(223,250,255,.75);}
+select.ctl{
+  width:100%; padding:9px 11px; border:1px solid var(--line-2); border-radius:10px;
+  font-size:12.5px; font-family:inherit; background:rgba(6,10,19,.65); color:var(--ink); cursor:pointer;
+}
+select.ctl:focus{outline:none; border-color:var(--cyan);}
+
+.list-bar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 16px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  background:rgba(6,10,19,.5); flex:none;
+}
+.list-bar .cnt{font-size:12px; color:var(--muted);}
+.list-bar .cnt b{color:var(--cyan); font-weight:700; font-family:var(--mono);}
+.reset{font-size:12px; color:var(--cyan); background:none; border:none; cursor:pointer; padding:4px 8px; border-radius:7px; font-family:inherit;}
+.reset:hover{background:var(--cyan-soft);}
+
+.list{flex:1 1 0; overflow-y:auto; padding:11px 13px 16px; min-height:120px;}
+.card{
+  border:1px solid var(--line); border-radius:var(--r); padding:12px 13px; margin-bottom:9px;
+  cursor:pointer; transition:.15s; background:rgba(10,16,32,.6); position:relative;
+}
+.card:hover{border-color:rgba(34,211,238,.45); transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,0,0,.35);}
+.card.active{border-color:var(--cyan); background:rgba(34,211,238,.07); box-shadow:0 0 16px rgba(34,211,238,.18);}
+.card h3{font-size:13.5px; font-weight:650; margin:0 0 6px; line-height:1.4; padding-right:52px;}
+.badge{
+  position:absolute; top:11px; right:11px; font-size:9.5px; letter-spacing:.6px; font-weight:700;
+  padding:3px 7px; border-radius:6px; text-transform:uppercase; font-family:var(--mono);
+}
+.b-onsite{color:var(--cyan); background:rgba(34,211,238,.1); border:1px solid rgba(34,211,238,.35);}
+.b-online{color:var(--violet); background:rgba(139,92,246,.12); border:1px solid rgba(139,92,246,.4);}
+.meta{display:flex; flex-wrap:wrap; gap:5px 12px; font-size:11.5px; color:var(--muted);}
+.meta span{display:inline-flex; align-items:center; gap:4px; white-space:nowrap;}
+.meta svg{width:12px; height:12px; stroke:var(--faint); fill:none; flex:none;}
+.meta .prize{color:var(--amber); font-weight:600;}
+.meta .mono{font-family:var(--mono); font-size:11px;}
+.tags{display:flex; flex-wrap:wrap; gap:5px; margin-top:7px;}
+.tag{font-size:10px; padding:2.5px 8px; border-radius:999px; border:1px solid var(--line-2); color:var(--muted);}
+.tag.t-ai{color:#7dd3fc; border-color:rgba(125,211,252,.4);}
+.tag.t-web3{color:#c4b5fd; border-color:rgba(196,181,253,.4);}
+.tag.t-student{color:#86efac; border-color:rgba(134,239,172,.35);}
+.tag.t-social{color:#fda4af; border-color:rgba(253,164,175,.35);}
+.tag.t-fintech{color:#fcd34d; border-color:rgba(252,211,77,.35);}
+.tag.t-game{color:#f0abfc; border-color:rgba(240,171,252,.4);}
+.tag.t-hardware{color:#fdba74; border-color:rgba(253,186,116,.4);}
+.tag.t-security{color:#f87171; border-color:rgba(248,113,113,.4);}
+.empty{color:var(--faint); font-size:12.5px; text-align:center; padding:34px 10px; line-height:2;}
+
+/* 地图区 */
+.map-wrap{flex:1; position:relative; min-width:0; background:var(--bg-2);}
+#map{position:absolute; inset:0; background:#0a0f1e;}
+.leaflet-container{font-family:var(--font);}
+.leaflet-control-zoom a{
+  background:var(--panel-solid)!important; color:var(--muted)!important; border-color:var(--line-2)!important;
+}
+.leaflet-control-zoom a:hover{color:var(--cyan)!important;}
+.leaflet-control-attribution{background:rgba(6,10,19,.7)!important; color:var(--faint)!important; font-size:9.5px!important;}
+.leaflet-control-attribution a{color:var(--muted)!important;}
+
+/* 自定义标记 */
+.hmark{background:none; border:none;}
+.hmark .pt{
+  width:14px; height:14px; border-radius:50%; position:relative;
+  background:radial-gradient(circle at 35% 35%, #9ff3ff, var(--cyan) 60%);
+  box-shadow:0 0 10px rgba(34,211,238,.8), 0 0 22px rgba(34,211,238,.35);
+  border:1.5px solid rgba(255,255,255,.75);
+}
+.hmark .pt.fuzzy{background:radial-gradient(circle at 35% 35%, #d5c5ff, var(--violet) 60%); box-shadow:0 0 10px rgba(139,92,246,.8), 0 0 20px rgba(139,92,246,.35);}
+.hmark .pt::after{
+  content:""; position:absolute; inset:-7px; border-radius:50%;
+  border:1px solid rgba(34,211,238,.45); animation:ring 2.4s ease-out infinite;
+}
+@keyframes ring{0%{transform:scale(.5); opacity:1;} 100%{transform:scale(1.5); opacity:0;}}
+@media (prefers-reduced-motion:reduce){ .hmark .pt::after, .live .dot{animation:none;} }
+.cluster{
+  display:flex; align-items:center; justify-content:center; border-radius:50%;
+  background:radial-gradient(circle at 32% 32%, rgba(34,211,238,.35), rgba(13,20,38,.92) 70%);
+  border:1.5px solid rgba(34,211,238,.65); color:#c9f6ff; font-weight:700; font-family:var(--mono);
+  box-shadow:0 0 16px rgba(34,211,238,.4); font-size:12px;
+}
+
+/* 弹窗 */
+.leaflet-popup-content-wrapper{
+  background:var(--panel-solid); color:var(--ink); border:1px solid var(--line-2);
+  border-radius:12px; box-shadow:0 12px 36px rgba(0,0,0,.55);
+}
+.leaflet-popup-tip{background:var(--panel-solid); border:1px solid var(--line-2);}
+.leaflet-popup-content{margin:13px 15px; line-height:1.5; min-width:210px;}
+.pop h4{margin:0 0 6px; font-size:13.5px; color:var(--ink);}
+.pop .pm{font-size:11.5px; color:var(--muted); margin-bottom:3px;}
+.pop .pm b{color:var(--amber); font-weight:600;}
+.pop a{
+  display:inline-block; margin-top:8px; font-size:11.5px; color:var(--cyan); text-decoration:none;
+  border:1px solid rgba(34,211,238,.4); padding:5px 12px; border-radius:8px; transition:.15s;
+}
+.pop a:hover{background:var(--cyan-soft);}
+.leaflet-container a.leaflet-popup-close-button{color:var(--faint)!important;}
+
+/* 图例 + 更新时间 */
+.legend{
+  position:absolute; right:12px; bottom:26px; z-index:1000;
+  background:var(--panel); border:1px solid var(--line-2); border-radius:11px;
+  padding:10px 13px; font-size:11px; color:var(--muted); backdrop-filter:blur(10px); line-height:1.9;
+}
+.legend .li{display:flex; align-items:center; gap:8px;}
+.legend .d{width:10px; height:10px; border-radius:50%; flex:none;}
+.legend .d1{background:var(--cyan); box-shadow:0 0 6px var(--cyan);}
+.legend .d2{background:var(--violet); box-shadow:0 0 6px var(--violet);}
+.updated{font-family:var(--mono); font-size:10px; color:var(--faint); margin-top:4px;}
+
+/* 移动端 */
+.m-toggle{display:none;}
+@media (max-width:820px){
+  header{padding:0 12px; gap:9px;}
+  .brand p{display:none;}
+  .live{display:none;}
+  .app{flex-direction:column;}
+  .sidebar{
+    width:100%; order:2; flex:1 1 55%; min-height:0; border-right:none; border-top:1px solid var(--line-2);
+  }
+  .sidebar.collapsed{flex:0 0 auto;}
+  .sidebar.collapsed .controls,.sidebar.collapsed .list{display:none;}
+  .map-wrap{order:1; flex:1 1 45%; min-height:220px;}
+  .m-toggle{
+    display:block; width:100%; background:rgba(6,10,19,.6); border:none; border-bottom:1px solid var(--line);
+    color:var(--cyan); font-size:11.5px; font-family:inherit; padding:8px; cursor:pointer; letter-spacing:1px;
+  }
+  .legend{display:none;}
+  .controls{max-height:34vh;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linecap="round">
+        <circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Hackathon <em>Atlas</em> · 全球黑客松地图</h1>
+      <p>DEVPOST × MLH × ETHGLOBAL × HACKEREARTH · 每日自动更新</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <span class="live" id="live"><span class="dot"></span><span id="liveTxt">DATA LINK …</span></span>
+  <a class="gh" href="https://github.com/hannahlovegood/hackathon-atlas" target="_blank" rel="noopener">
+    <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    源码
+  </a>
+</header>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <button class="m-toggle" id="mToggle" aria-expanded="true">▼ 收起筛选与列表</button>
+    <div class="controls">
+      <div class="stats" id="stats" aria-live="polite"></div>
+
+      <div class="search">
+        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg>
+        <input id="q" type="search" placeholder="搜索名称 / 城市 / 主办方…" autocomplete="off" />
+      </div>
+
+      <div class="fgroup">
+        <div class="flabel">举办时间</div>
+        <div class="chips" id="fTime" role="group" aria-label="按时间筛选"></div>
+      </div>
+
+      <div class="fgroup">
+        <div class="flabel">地区 / 形式</div>
+        <div class="chips" id="fRegion" role="group" aria-label="按地区筛选"></div>
+      </div>
+
+      <div class="fgroup">
+        <div class="flabel">国家 / 地区</div>
+        <select class="ctl" id="fCountry" aria-label="按国家筛选"><option value="">全部国家 / 地区</option></select>
+      </div>
+
+      <div class="fgroup">
+        <div class="flabel">类别</div>
+        <div class="chips" id="fCat" role="group" aria-label="按类别筛选"></div>
+      </div>
+
+      <div class="fgroup">
+        <div class="flabel">持续时间</div>
+        <div class="chips" id="fDur" role="group" aria-label="按持续时间筛选"></div>
+      </div>
+
+      <div class="fgroup">
+        <div class="flabel">奖金池</div>
+        <div class="chips" id="fPrize" role="group" aria-label="按奖金筛选"></div>
+      </div>
+    </div>
+
+    <div class="list-bar">
+      <span class="cnt">命中 <b id="cnt">0</b> 场</span>
+      <button class="reset" id="reset">重置全部筛选</button>
+    </div>
+    <div class="list" id="list"></div>
+  </aside>
+
+  <main class="map-wrap">
+    <div id="map" role="application" aria-label="世界黑客松地图"></div>
+    <div class="legend">
+      <div class="li"><span class="d d1"></span>精确城市定位</div>
+      <div class="li"><span class="d d2"></span>国家级近似定位</div>
+      <div class="updated" id="updated"></div>
+    </div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="data.js"></script>
+<script>
+(function(){
+'use strict';
+var DATA = window.HACK_DATA || { updated:null, stats:{}, events:[] };
+var EV = DATA.events || [];
+
+var CAT_NAME = { ai:'AI · 机器学习', web3:'Web3 · 区块链', student:'学生 · 校园', social:'社会公益', general:'综合', fintech:'金融科技', game:'游戏', hardware:'硬件 · IoT', security:'安全 · CTF' };
+var SRC_NAME = { devpost:'Devpost', mlh:'MLH', ethglobal:'ETHGlobal', hackerearth:'HackerEarth' };
+
+// ---------- 状态 ----------
+var state = { q:'', time:'', region:'', country:'', cat:'', dur:'', prize:'' };
+var activeId = null;
+
+// ---------- 时间工具 ----------
+var now = new Date(); now.setHours(0,0,0,0);
+function d(s){ return s ? new Date(s + 'T12:00:00') : null; }
+function fmt(s){ if(!s) return '待定'; var x = d(s); return (x.getMonth()+1) + '/' + x.getDate(); }
+function fmtRange(e){
+  if(!e.start) return '日期待定';
+  var y = d(e.start).getFullYear();
+  var cur = new Date().getFullYear();
+  return (y!==cur ? y+'年 ' : '') + fmt(e.start) + ' – ' + fmt(e.end);
+}
+function inTime(e, key){
+  if(!key) return true;
+  var s = d(e.start), en = d(e.end);
+  if(!s) return key==='';
+  var m0 = new Date(now.getFullYear(), now.getMonth(), 1);
+  if(key==='ongoing') return s<=now && en && en>=now;
+  if(key==='month'){ var m1=new Date(m0.getFullYear(),m0.getMonth()+1,1); return s>=m0&&s<m1 || (s<=now&&en&&en>=now); }
+  if(key==='next'){ var a=new Date(m0.getFullYear(),m0.getMonth()+1,1), b=new Date(m0.getFullYear(),m0.getMonth()+2,1); return s>=a&&s<b; }
+  if(key==='q3'){ var c=new Date(now); c.setMonth(c.getMonth()+3); return s>=now&&s<=c; }
+  return true;
+}
+function durKey(e){
+  if(!e.days) return '';
+  if(e.days<=2) return 'wk';
+  if(e.days<=7) return 'w1';
+  return 'long';
+}
+function prizeOk(e, key){
+  if(!key) return true;
+  if(key==='has') return e.prizeUSD>0;
+  if(key==='10k') return e.prizeUSD>=10000;
+  if(key==='100k') return e.prizeUSD>=100000;
+  return true;
+}
+function money(n){
+  if(n>=1000000) return '$'+(n/1000000).toFixed(n%1000000?1:0)+'M';
+  if(n>=1000) return '$'+Math.round(n/1000)+'K';
+  return '$'+n;
+}
+function esc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+// ---------- 筛选 ----------
+function filtered(){
+  var q = state.q.toLowerCase();
+  return EV.filter(function(e){
+    if(q && (e.name+' '+(e.city||'')+' '+(e.country||'')+' '+e.org).toLowerCase().indexOf(q)<0) return false;
+    if(!inTime(e, state.time)) return false;
+    if(state.region && e.region!==state.region) return false;
+    if(state.country && e.country!==state.country) return false;
+    if(state.cat && e.cats.indexOf(state.cat)<0) return false;
+    if(state.dur && durKey(e)!==state.dur) return false;
+    if(!prizeOk(e, state.prize)) return false;
+    return true;
+  });
+}
+
+// ---------- chips 构建 ----------
+function chips(el, items, key){
+  el.innerHTML = items.map(function(it){
+    return '<button class="chip'+(state[key]===it.v?' active':'')+'" data-v="'+esc(it.v)+'">'+esc(it.t)+(it.n!=null?' <span class="n">'+it.n+'</span>':'')+'</button>';
+  }).join('');
+  el.onclick = function(ev){
+    var b = ev.target.closest('.chip'); if(!b) return;
+    state[key] = (state[key]===b.dataset.v) ? '' : b.dataset.v;
+    render();
+  };
+}
+function cnt(fn){ return EV.filter(fn).length; }
+
+function buildFilters(){
+  chips(document.getElementById('fTime'), [
+    {v:'', t:'全部'},
+    {v:'ongoing', t:'进行中', n:cnt(function(e){return inTime(e,'ongoing');})},
+    {v:'month', t:'本月', n:cnt(function(e){return inTime(e,'month');})},
+    {v:'next', t:'下月', n:cnt(function(e){return inTime(e,'next');})},
+    {v:'q3', t:'3个月内', n:cnt(function(e){return inTime(e,'q3');})}
+  ], 'time');
+
+  var regions = ['北美','欧洲','亚洲','南美','非洲','大洋洲','线上'].filter(function(r){ return EV.some(function(e){return e.region===r;}); });
+  chips(document.getElementById('fRegion'), [{v:'',t:'全部'}].concat(regions.map(function(r){
+    return {v:r, t:r, n:cnt(function(e){return e.region===r;})};
+  })), 'region');
+
+  var catCount = {};
+  EV.forEach(function(e){ e.cats.forEach(function(c){ catCount[c]=(catCount[c]||0)+1; }); });
+  var cats = Object.keys(catCount).sort(function(a,b){return catCount[b]-catCount[a];});
+  chips(document.getElementById('fCat'), [{v:'',t:'全部'}].concat(cats.map(function(c){
+    return {v:c, t:CAT_NAME[c]||c, n:catCount[c]};
+  })), 'cat');
+
+  chips(document.getElementById('fDur'), [
+    {v:'',t:'全部'},
+    {v:'wk', t:'周末冲刺 ≤2天', n:cnt(function(e){return durKey(e)==='wk';})},
+    {v:'w1', t:'3–7天', n:cnt(function(e){return durKey(e)==='w1';})},
+    {v:'long', t:'长期 >7天', n:cnt(function(e){return durKey(e)==='long';})}
+  ], 'dur');
+
+  chips(document.getElementById('fPrize'), [
+    {v:'',t:'全部'},
+    {v:'has', t:'有奖金', n:cnt(function(e){return e.prizeUSD>0;})},
+    {v:'10k', t:'≥ $10K', n:cnt(function(e){return e.prizeUSD>=10000;})},
+    {v:'100k', t:'≥ $100K', n:cnt(function(e){return e.prizeUSD>=100000;})}
+  ], 'prize');
+
+  var sel = document.getElementById('fCountry');
+  var cc = {};
+  EV.forEach(function(e){ if(e.country) cc[e.country]=(cc[e.country]||0)+1; });
+  Object.keys(cc).sort(function(a,b){return cc[b]-cc[a];}).forEach(function(c){
+    var o = document.createElement('option'); o.value=c; o.textContent=c+'（'+cc[c]+'）'; sel.appendChild(o);
+  });
+  sel.onchange = function(){ state.country = sel.value; render(); };
+}
+
+// ---------- 地图 ----------
+var map = L.map('map', { worldCopyJump:true, minZoom:2, zoomControl:true }).setView([28, 12], 2);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:18
+}).addTo(map);
+
+var cluster = L.markerClusterGroup({
+  showCoverageOnHover:false, maxClusterRadius:44,
+  iconCreateFunction: function(c){
+    var n = c.getChildCount();
+    var s = n<10?34:(n<30?40:48);
+    return L.divIcon({ html:'<div class="cluster" style="width:'+s+'px;height:'+s+'px">'+n+'</div>', className:'', iconSize:[s,s] });
+  }
+});
+map.addLayer(cluster);
+var markers = {};
+
+function popHtml(e){
+  return '<div class="pop"><h4>'+esc(e.name)+'</h4>'
+    +'<div class="pm">📍 '+esc((e.city?e.city+' · ':'')+(e.country||''))+(e.exact?'':'（国家级定位）')+'</div>'
+    +'<div class="pm">🗓 '+fmtRange(e)+(e.days?' · '+e.days+'天':'')+'</div>'
+    +(e.prizeUSD>0?'<div class="pm">🏆 奖金池 <b>'+money(e.prizeUSD)+'</b></div>':'')
+    +'<div class="pm">📡 '+(SRC_NAME[e.source]||e.source)+(e.regs>0?' · '+e.regs.toLocaleString()+' 人已报名':'')+'</div>'
+    +'<a href="'+esc(e.url)+'" target="_blank" rel="noopener">前往报名 ↗</a></div>';
+}
+
+function renderMap(list){
+  cluster.clearLayers(); markers = {};
+  list.forEach(function(e){
+    if(e.online || e.lat==null) return;
+    var m = L.marker([e.lat, e.lng], {
+      icon: L.divIcon({ className:'hmark', html:'<div class="pt'+(e.exact?'':' fuzzy')+'"></div>', iconSize:[14,14], iconAnchor:[7,7] }),
+      title: e.name
+    });
+    m.bindPopup(popHtml(e), { maxWidth:280 });
+    m.on('click', function(){ setActive(e.id, false); });
+    cluster.addLayer(m); markers[e.id] = m;
+  });
+}
+
+// ---------- 列表 ----------
+var listEl = document.getElementById('list');
+function cardHtml(e){
+  var locTxt = e.online ? '线上 · 全球可参加' : esc((e.city?e.city+' · ':'')+(e.country||''));
+  return '<div class="card'+(activeId===e.id?' active':'')+'" data-id="'+esc(e.id)+'">'
+    +'<span class="badge '+(e.online?'b-online':'b-onsite')+'">'+(e.online?'ONLINE':'ONSITE')+'</span>'
+    +'<h3>'+esc(e.name)+'</h3>'
+    +'<div class="meta">'
+    +'<span><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>'+locTxt+'</span>'
+    +'<span class="mono"><svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>'+fmtRange(e)+(e.days?' · '+e.days+'天':'')+'</span>'
+    +(e.prizeUSD>0?'<span class="prize">🏆 '+money(e.prizeUSD)+'</span>':'')
+    +'</div>'
+    +'<div class="tags">'+e.cats.map(function(c){return '<span class="tag t-'+c+'">'+(CAT_NAME[c]||c)+'</span>';}).join('')
+    +'<span class="tag">'+(SRC_NAME[e.source]||e.source)+'</span></div>'
+    +'</div>';
+}
+function renderList(list){
+  document.getElementById('cnt').textContent = list.length;
+  if(!list.length){
+    listEl.innerHTML = '<div class="empty">这个组合下暂时没有黑客松。<br>试试放宽时间或奖金条件。</div>';
+    return;
+  }
+  listEl.innerHTML = list.map(cardHtml).join('');
+}
+listEl.addEventListener('click', function(ev){
+  var c = ev.target.closest('.card'); if(!c) return;
+  setActive(c.dataset.id, true);
+});
+
+function setActive(id, fly){
+  activeId = id;
+  var e = EV.filter(function(x){return x.id===id;})[0];
+  Array.prototype.forEach.call(listEl.querySelectorAll('.card'), function(el){
+    el.classList.toggle('active', el.dataset.id===id);
+  });
+  if(!e) return;
+  var card = listEl.querySelector('.card[data-id="'+id+'"]');
+  if(card && !fly) card.scrollIntoView({ block:'nearest', behavior:'smooth' });
+  if(fly && !e.online && e.lat!=null){
+    map.flyTo([e.lat, e.lng], Math.max(map.getZoom(), 5), { duration:.8 });
+    var m = markers[id];
+    if(m) setTimeout(function(){ cluster.zoomToShowLayer(m, function(){ m.openPopup(); }); }, 850);
+  } else if(fly && e.online){
+    window.open(e.url, '_blank', 'noopener');
+  }
+}
+
+// ---------- 统计 ----------
+function renderStats(list){
+  var onsite = list.filter(function(e){return !e.online;}).length;
+  var countries = {};
+  list.forEach(function(e){ if(e.country) countries[e.country]=1; });
+  var pool = list.reduce(function(s,e){return s+e.prizeUSD;},0);
+  document.getElementById('stats').innerHTML =
+    '<div class="stat"><b>'+list.length+'</b><span>场次</span></div>'
+    +'<div class="stat"><b>'+onsite+'</b><span>线下</span></div>'
+    +'<div class="stat"><b>'+Object.keys(countries).length+'</b><span>国家地区</span></div>'
+    +'<div class="stat"><b>'+(pool>0?money(pool):'—')+'</b><span>总奖金池</span></div>';
+}
+
+// ---------- 总渲染 ----------
+function render(){
+  var list = filtered();
+  buildFilters();
+  renderStats(list);
+  renderList(list);
+  renderMap(list);
+}
+
+// ---------- 事件 ----------
+var qEl = document.getElementById('q'), qT;
+qEl.addEventListener('input', function(){
+  clearTimeout(qT); qT = setTimeout(function(){ state.q = qEl.value.trim(); render(); }, 180);
+});
+document.getElementById('reset').onclick = function(){
+  state = { q:'', time:'', region:'', country:'', cat:'', dur:'', prize:'' };
+  qEl.value=''; document.getElementById('fCountry').value='';
+  render();
+};
+var mT = document.getElementById('mToggle'), sb = document.getElementById('sidebar');
+mT.onclick = function(){
+  var c = sb.classList.toggle('collapsed');
+  mT.textContent = c ? '▲ 展开筛选与列表' : '▼ 收起筛选与列表';
+  mT.setAttribute('aria-expanded', String(!c));
+  setTimeout(function(){ map.invalidateSize(); }, 60);
+};
+
+// ---------- 启动 ----------
+if(EV.length){
+  var u = DATA.updated ? new Date(DATA.updated) : null;
+  document.getElementById('liveTxt').textContent = 'LIVE · ' + EV.length + ' EVENTS';
+  document.getElementById('updated').textContent = u ? '数据更新 ' + u.getFullYear()+'-'+String(u.getMonth()+1).padStart(2,'0')+'-'+String(u.getDate()).padStart(2,'0') : '';
+  render();
+} else {
+  document.getElementById('liveTxt').textContent = 'NO DATA';
+  listEl.innerHTML = '<div class="empty">数据文件缺失。<br>请先运行 <code>node fetch.mjs</code> 生成 data.js。</div>';
+}
+window.addEventListener('resize', function(){ map.invalidateSize(); });
+})();
+</script>
+</body>
+</html>
