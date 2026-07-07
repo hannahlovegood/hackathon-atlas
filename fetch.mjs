@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// 全球黑客松地图 · 数据抓取器（零依赖，Node 18+）
-// 四个免 Key 数据源 → 归一化 → 离线地理编码 → data.js
+// AI·科技活动地图 · 数据抓取器（零依赖，Node 18+）
+// 六个免 Key 数据源（黑客松×4 + 行业大会 + 学术顶会）→ 归一化 → 离线地理编码 → data.js
 // 注意：本脚本只写 data.js，不碰 index.html —— 页面随便改，不会被覆盖。
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36';
@@ -9,6 +9,7 @@ async function get(url, asJson = true) {
   for (let i = 0; i < 3; i++) {
     try {
       const res = await fetch(url, { headers: { 'User-Agent': UA, 'Accept': asJson ? 'application/json' : 'text/html' }, redirect: 'follow', signal: AbortSignal.timeout(30000) });
+      if (res.status === 404) return null; // 404 不重试（confs.tech 按主题探测，缺文件属正常）
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return asJson ? await res.json() : await res.text();
     } catch (e) {
@@ -34,7 +35,7 @@ const CITY = {
 };
 const COUNTRY = {
   'US':['美国','北美',39.8,-98.6],'CA':['加拿大','北美',56.1,-106.3],'MX':['墨西哥','北美',23.6,-102.5],
-  'GB':['英国','欧洲',54.0,-2.0],'UK':['英国','欧洲',54.0,-2.0],'IE':['爱尔兰','欧洲',53.4,-8.2],'FR':['法国','欧洲',46.2,2.2],'DE':['德国','欧洲',51.2,10.4],'NL':['荷兰','欧洲',52.1,5.3],'BE':['比利时','欧洲',50.5,4.5],'CH':['瑞士','欧洲',46.8,8.2],'AT':['奥地利','欧洲',47.5,14.6],'CZ':['捷克','欧洲',49.8,15.5],'PL':['波兰','欧洲',51.9,19.1],'HU':['匈牙利','欧洲',47.2,19.5],'RO':['罗马尼亚','欧洲',45.9,24.9],'BG':['保加利亚','欧洲',42.7,25.5],'GR':['希腊','欧洲',39.1,21.8],'IT':['意大利','欧洲',41.9,12.6],'ES':['西班牙','欧洲',40.5,-3.7],'PT':['葡萄牙','欧洲',39.4,-8.2],'SE':['瑞典','欧洲',60.1,18.6],'NO':['挪威','欧洲',60.5,8.5],'DK':['丹麦','欧洲',56.3,9.5],'FI':['芬兰','欧洲',61.9,25.7],'EE':['爱沙尼亚','欧洲',58.6,25.0],'LV':['拉脱维亚','欧洲',56.9,24.6],'LT':['立陶宛','欧洲',55.2,23.9],'UA':['乌克兰','欧洲',48.4,31.2],'RS':['塞尔维亚','欧洲',44.0,21.0],'HR':['克罗地亚','欧洲',45.1,15.2],'SI':['斯洛文尼亚','欧洲',46.2,14.8],'SK':['斯洛伐克','欧洲',48.7,19.7],'TR':['土耳其','欧洲',39.0,35.2],'RU':['俄罗斯','欧洲',61.5,105.3],
+  'GB':['英国','欧洲',54.0,-2.0],'UK':['英国','欧洲',54.0,-2.0],'IE':['爱尔兰','欧洲',53.4,-8.2],'FR':['法国','欧洲',46.2,2.2],'DE':['德国','欧洲',51.2,10.4],'NL':['荷兰','欧洲',52.1,5.3],'BE':['比利时','欧洲',50.5,4.5],'CH':['瑞士','欧洲',46.8,8.2],'AT':['奥地利','欧洲',47.5,14.6],'CZ':['捷克','欧洲',49.8,15.5],'PL':['波兰','欧洲',51.9,19.1],'HU':['匈牙利','欧洲',47.2,19.5],'RO':['罗马尼亚','欧洲',45.9,24.9],'BG':['保加利亚','欧洲',42.7,25.5],'GR':['希腊','欧洲',39.1,21.8],'IT':['意大利','欧洲',41.9,12.6],'ES':['西班牙','欧洲',40.5,-3.7],'PT':['葡萄牙','欧洲',39.4,-8.2],'SE':['瑞典','欧洲',60.1,18.6],'NO':['挪威','欧洲',60.5,8.5],'DK':['丹麦','欧洲',56.3,9.5],'FI':['芬兰','欧洲',61.9,25.7],'EE':['爱沙尼亚','欧洲',58.6,25.0],'LV':['拉脱维亚','欧洲',56.9,24.6],'LT':['立陶宛','欧洲',55.2,23.9],'UA':['乌克兰','欧洲',48.4,31.2],'RS':['塞尔维亚','欧洲',44.0,21.0],'HR':['克罗地亚','欧洲',45.1,15.2],'SI':['斯洛文尼亚','欧洲',46.2,14.8],'SK':['斯洛伐克','欧洲',48.7,19.7],'TR':['土耳其','欧洲',39.0,35.2],'RU':['俄罗斯','欧洲',61.5,105.3],'MT':['马耳他','欧洲',35.9,14.4],'LU':['卢森堡','欧洲',49.8,6.1],'IS':['冰岛','欧洲',64.9,-19.0],'CY':['塞浦路斯','欧洲',35.1,33.4],'BA':['波黑','欧洲',43.9,17.7],'MK':['北马其顿','欧洲',41.6,21.7],'MD':['摩尔多瓦','欧洲',47.4,28.4],
   'CN':['中国','亚洲',35.9,104.2],'HK':['中国香港','亚洲',22.32,114.17],'TW':['中国台湾','亚洲',23.7,121.0],'MO':['中国澳门','亚洲',22.2,113.54],'JP':['日本','亚洲',36.2,138.3],'KR':['韩国','亚洲',35.9,127.8],'SG':['新加坡','亚洲',1.35,103.82],'MY':['马来西亚','亚洲',4.2,101.98],'ID':['印度尼西亚','亚洲',-0.8,113.9],'TH':['泰国','亚洲',15.9,101.0],'VN':['越南','亚洲',14.1,108.3],'PH':['菲律宾','亚洲',12.9,121.8],'KH':['柬埔寨','亚洲',12.6,105.0],'IN':['印度','亚洲',20.6,79.0],'PK':['巴基斯坦','亚洲',30.4,69.3],'BD':['孟加拉国','亚洲',23.7,90.4],'LK':['斯里兰卡','亚洲',7.9,80.8],'NP':['尼泊尔','亚洲',28.4,84.1],'AE':['阿联酋','亚洲',23.4,53.8],'SA':['沙特阿拉伯','亚洲',23.9,45.1],'QA':['卡塔尔','亚洲',25.4,51.2],'BH':['巴林','亚洲',26.0,50.5],'KW':['科威特','亚洲',29.3,47.5],'OM':['阿曼','亚洲',21.5,55.9],'JO':['约旦','亚洲',30.6,36.2],'LB':['黎巴嫩','亚洲',33.9,35.9],'IL':['以色列','亚洲',31.0,34.9],'GE':['格鲁吉亚','亚洲',42.3,43.4],'AM':['亚美尼亚','亚洲',40.1,45.0],'AZ':['阿塞拜疆','亚洲',40.1,47.6],'KZ':['哈萨克斯坦','亚洲',48.0,66.9],'UZ':['乌兹别克斯坦','亚洲',41.4,64.6],'KG':['吉尔吉斯斯坦','亚洲',41.2,74.8],'MN':['蒙古','亚洲',46.9,103.8],
   'AU':['澳大利亚','大洋洲',-25.3,133.8],'NZ':['新西兰','大洋洲',-40.9,174.9],
   'BR':['巴西','南美',-14.2,-51.9],'AR':['阿根廷','南美',-38.4,-63.6],'CL':['智利','南美',-35.7,-71.5],'CO':['哥伦比亚','南美',4.6,-74.3],'PE':['秘鲁','南美',-9.2,-75.0],'EC':['厄瓜多尔','南美',-1.8,-78.2],'UY':['乌拉圭','南美',-32.5,-55.8],'VE':['委内瑞拉','南美',6.4,-66.6],'BO':['玻利维亚','南美',-16.3,-63.6],'CR':['哥斯达黎加','北美',9.7,-83.8],'PA':['巴拿马','北美',8.5,-80.8],'GT':['危地马拉','北美',15.8,-90.2],
@@ -43,6 +44,7 @@ const COUNTRY = {
 const COUNTRY_BY_NAME = {}; // "united states" -> "US"
 const NAME_ALIASES = {
   'united states':'US','usa':'US','united states of america':'US','canada':'CA','mexico':'MX','united kingdom':'GB','england':'GB','scotland':'GB','wales':'GB','ireland':'IE','france':'FR','germany':'DE','netherlands':'NL','the netherlands':'NL','belgium':'BE','switzerland':'CH','austria':'AT','czech republic':'CZ','czechia':'CZ','poland':'PL','hungary':'HU','romania':'RO','bulgaria':'BG','greece':'GR','italy':'IT','spain':'ES','portugal':'PT','sweden':'SE','norway':'NO','denmark':'DK','finland':'FI','estonia':'EE','latvia':'LV','lithuania':'LT','ukraine':'UA','serbia':'RS','croatia':'HR','slovenia':'SI','slovakia':'SK','turkey':'TR','türkiye':'TR','russia':'RU','china':'CN','hong kong':'HK','taiwan':'TW','macau':'MO','japan':'JP','south korea':'KR','korea':'KR','singapore':'SG','malaysia':'MY','indonesia':'ID','thailand':'TH','vietnam':'VN','philippines':'PH','cambodia':'KH','india':'IN','pakistan':'PK','bangladesh':'BD','sri lanka':'LK','nepal':'NP','united arab emirates':'AE','uae':'AE','saudi arabia':'SA','qatar':'QA','bahrain':'BH','kuwait':'KW','oman':'OM','jordan':'JO','lebanon':'LB','israel':'IL','georgia':'GE','armenia':'AM','azerbaijan':'AZ','kazakhstan':'KZ','uzbekistan':'UZ','kyrgyzstan':'KG','mongolia':'MN','australia':'AU','new zealand':'NZ','brazil':'BR','argentina':'AR','chile':'CL','colombia':'CO','peru':'PE','ecuador':'EC','uruguay':'UY','venezuela':'VE','bolivia':'BO','costa rica':'CR','panama':'PA','guatemala':'GT','nigeria':'NG','kenya':'KE','south africa':'ZA','egypt':'EG','ghana':'GH','uganda':'UG','rwanda':'RW','tanzania':'TZ','ethiopia':'ET','morocco':'MA','tunisia':'TN','algeria':'DZ','senegal':'SN','ivory coast':'CI',"côte d'ivoire":'CI','zimbabwe':'ZW','zambia':'ZM',
+  'u.s.a.':'US','u.s.':'US','u.k.':'GB','uk':'GB','malta':'MT','luxembourg':'LU','iceland':'IS','cyprus':'CY','bosnia and herzegovina':'BA','north macedonia':'MK','moldova':'MD','republic of korea':'KR','czechia (czech republic)':'CZ','the philippines':'PH',
 };
 for (const [n, c] of Object.entries(NAME_ALIASES)) COUNTRY_BY_NAME[n] = c;
 
@@ -96,6 +98,7 @@ function categorize(name, themes, source) {
   if (/fintech|finance|banking|payment|金融/.test(t)) cats.add('fintech');
   if (/security|ctf|cyber|安全/.test(t)) cats.add('security');
   if (/hardware|iot|robot|embedded|硬件|机器人/.test(t)) cats.add('hardware');
+  if (/javascript|typescript|\bpython\b|\brust\b|\bjava\b|kotlin|\bphp\b|\bruby\b|c\+\+|\bcpp\b|dotnet|\.net|android|\bios\b|\bcss\b|graphql|devops|kubernetes|cloud native|\bsre\b|open ?source|frontend|backend|\bapi\b|testing|serverless|scala|clojure|groovy|networking|performance|数据库|database/.test(t)) cats.add('dev');
   if (!cats.size) cats.add('general');
   return [...cats];
 }
@@ -227,11 +230,12 @@ async function fetchETHGlobal() {
       start: e.startTime ? e.startTime.slice(0, 10) : null,
       end: e.endTime ? e.endTime.slice(0, 10) : null,
       prizeUSD: 0, prizeText: '', org: 'ETHGlobal', regs: 0,
-      themes: ['Web3', e.type || 'hackathon'], type: e.type, status: e.status,
+      themes: ['Web3', e.type || 'hackathon'],
+      type: e.type === 'summit' ? 'conference' : 'hackathon', etype: e.type, status: e.status,
     });
   }
   // 只留未来/进行中的 hackathon 与 summit
-  return out.filter(e => e.status !== 'past' && (e.type === 'hackathon' || e.type === 'summit'));
+  return out.filter(e => e.status !== 'past' && (e.etype === 'hackathon' || e.etype === 'summit'));
 }
 
 // ---------- 源 4：HackerEarth ----------
@@ -249,15 +253,113 @@ async function fetchHackerEarth() {
   }));
 }
 
+// ---------- 源 5：Confs.tech（行业技术大会，开放数据仓库） ----------
+// 主题文件按年份探测，缺文件返回 404 属正常；同一大会可能出现在多个主题文件里，按 名称+日期 合并。
+const CT_TOPICS = ['general','data','devops','javascript','typescript','python','rust','java','kotlin','php','ruby','cpp','dotnet','android','ios','css','ux','product','leadership','security','iot','opensource','api','graphql','testing','sre','performance','networking','accessibility','identity','scala','clojure','groovy','tech-comm','cfml','ai','machine-learning'];
+const CT_TOPIC_CAT = { data:'ai', ai:'ai', 'machine-learning':'ai', security:'security', iot:'hardware', accessibility:'social', identity:'security', general:'general', ux:'general', product:'general', leadership:'general', 'tech-comm':'general' };
+async function fetchConfsTech() {
+  const year = new Date().getFullYear();
+  const jobs = [];
+  for (const y of [year, year + 1]) for (const topic of CT_TOPICS)
+    jobs.push(get(`https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/${y}/${topic}.json`).then(j => ({ topic, list: j || [] })));
+  const results = await Promise.all(jobs);
+  const byKey = new Map();
+  for (const { topic, list } of results) {
+    for (const c of list) {
+      if (!c.name || !c.startDate) continue;
+      const key = c.name.toLowerCase().replace(/[^a-z0-9]/g, '') + c.startDate;
+      const cat = CT_TOPIC_CAT[topic] || 'dev';
+      if (byKey.has(key)) { byKey.get(key).baseCats.add(cat); continue; }
+      const online = !!c.online && !c.city;
+      const { city, cc } = online ? { city: null, cc: null } : parseLocation(`${c.city || ''}, ${c.country || ''}`);
+      byKey.set(key, {
+        id: `ct-${key.slice(0, 40)}`, name: c.name.trim(), source: 'confstech', url: c.url,
+        online, city, countryCode: cc,
+        start: c.startDate, end: c.endDate || c.startDate,
+        prizeUSD: 0, prizeText: '', org: 'Confs.tech', regs: 0,
+        themes: [topic], baseCats: new Set([cat]), type: 'conference',
+      });
+    }
+  }
+  return [...byKey.values()].map(e => ({ ...e, baseCats: [...e.baseCats] }));
+}
+
+// ---------- 源 6：ccfddl（学术顶会，聚合 YAML） ----------
+// 只做行级解析：顶层 `- title:` 开新会议，`  - year:` 开新一届，四空格键值属于当届。
+const MONTHS = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+function monthNum(s) { return MONTHS[String(s || '').slice(0, 3).toLowerCase()] || null; }
+function parseDateText(text, year) {
+  const s = String(text || '').trim();
+  if (!s || /tbd/i.test(s)) return null;
+  const iso = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  // "February 22 - March 1, 2026" / "May 03-05, 2026" / "Apr 24 - 28, 2026"
+  let m = s.match(/([A-Za-z]+)\.?\s*(\d{1,2})\s*[-–—]\s*(?:([A-Za-z]+)\.?\s*)?(\d{1,2})\s*,?\s*(\d{4})?/);
+  if (m) {
+    const y2 = m[5] ? +m[5] : year;
+    const mo1 = monthNum(m[1]), mo2 = m[3] ? monthNum(m[3]) : monthNum(m[1]);
+    if (!mo1 || !mo2 || !y2) return null;
+    let y1 = y2;
+    if (mo1 > mo2) y1 = y2 - 1; // 跨年（Dec – Jan）
+    return { start: iso(y1, mo1, +m[2]), end: iso(y2, mo2, +m[4]) };
+  }
+  // 单日 "May 3, 2026"
+  m = s.match(/([A-Za-z]+)\.?\s*(\d{1,2})\s*,?\s*(\d{4})?/);
+  if (m) {
+    const mo = monthNum(m[1]), y = m[3] ? +m[3] : year;
+    if (!mo || !y) return null;
+    const d0 = iso(y, mo, +m[2]);
+    return { start: d0, end: d0 };
+  }
+  return null;
+}
+const CCF_SUB_CAT = { AI:'ai', SC:'security', DB:'dev', DS:'dev', NW:'dev', SE:'dev', CG:'dev', CT:'general', HI:'general', MX:'general' };
+async function fetchCCFDDL() {
+  const text = await get('https://ccfddl.com/conference/allconf.yml', false);
+  if (!text) return [];
+  const thisYear = new Date().getFullYear();
+  const out = [];
+  let conf = null, inst = null;
+  const strip = v => v.replace(/^['"]|['"]$/g, '').trim();
+  const flush = () => {
+    if (!conf || !inst || !inst.year || inst.year < thisYear) return;
+    const dt = parseDateText(inst.date, inst.year);
+    if (!dt) return;
+    const place = inst.place || '';
+    const online = /virtual|online/i.test(place) || !place;
+    const { city, cc } = online ? { city: null, cc: null } : parseLocation(place);
+    out.push({
+      id: `ccf-${inst.id || (conf.title + inst.year).toLowerCase().replace(/[^a-z0-9]/g, '')}`,
+      name: `${conf.title} ${inst.year}`, source: 'ccfddl', url: inst.link || 'https://ccfddl.com/',
+      online, city, countryCode: cc,
+      start: dt.start, end: dt.end,
+      prizeUSD: 0, prizeText: '', org: conf.description || 'CCF DDL', regs: 0,
+      themes: [conf.sub || ''], baseCats: [CCF_SUB_CAT[conf.sub] || 'general'],
+      type: 'academic', rank: conf.ccf ? `CCF-${conf.ccf}` : null,
+    });
+  };
+  for (const raw of text.split('\n')) {
+    let m;
+    if ((m = raw.match(/^- title:\s*(.*)/))) { flush(); inst = null; conf = { title: strip(m[1]) }; }
+    else if (!conf) continue;
+    else if ((m = raw.match(/^  description:\s*(.*)/))) conf.description = strip(m[1]);
+    else if ((m = raw.match(/^  sub:\s*(.*)/))) conf.sub = strip(m[1]);
+    else if ((m = raw.match(/^    ccf:\s*(.*)/)) && !inst) conf.ccf = strip(m[1]);
+    else if ((m = raw.match(/^  - year:\s*(\d+)/))) { flush(); inst = { year: +m[1] }; }
+    else if (inst && (m = raw.match(/^    (id|link|date|place):\s*(.*)/))) inst[m[1]] = strip(m[2]);
+  }
+  flush();
+  return out;
+}
+
 // ---------- 主流程 ----------
 const today = new Date().toISOString().slice(0, 10);
 console.log(`抓取开始 ${today}`);
-const [dp, mlh, eg, he] = await Promise.all([fetchDevpost(), fetchMLH(), fetchETHGlobal(), fetchHackerEarth()]);
-console.log(`  Devpost ${dp.length} · MLH ${mlh.length} · ETHGlobal ${eg.length} · HackerEarth ${he.length}`);
+const [dp, mlh, eg, he, ct, ccf] = await Promise.all([fetchDevpost(), fetchMLH(), fetchETHGlobal(), fetchHackerEarth(), fetchConfsTech(), fetchCCFDDL()]);
+console.log(`  Devpost ${dp.length} · MLH ${mlh.length} · ETHGlobal ${eg.length} · HackerEarth ${he.length} · Confs.tech ${ct.length} · ccfddl ${ccf.length}`);
 
 const all = [];
 const seenName = new Set();
-for (const e of [...eg, ...mlh, ...dp, ...he]) {
+for (const e of [...eg, ...mlh, ...dp, ...he, ...ct, ...ccf]) {
   // 去掉已结束超过 7 天的
   if (e.end && e.end < new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10)) continue;
   const nameKey = e.name.toLowerCase().replace(/[^a-z0-9一-鿿]/g, '');
@@ -271,17 +373,20 @@ for (const e of [...eg, ...mlh, ...dp, ...he]) {
     if (g) { lat = +g.lat.toFixed(4); lng = +g.lng.toFixed(4); exact = g.exact; }
     else e.online = true; // 定位不了就归入线上/未定位组，不上地图
   }
-  const cats = categorize(e.name, e.themes || [], e.source);
+  let cats = categorize(e.name, e.themes || [], e.source);
+  if (e.baseCats) cats = [...new Set([...e.baseCats, ...cats])];
+  if (cats.length > 1) cats = cats.filter(c => c !== 'general');
   if (e.student && !cats.includes('student')) cats.push('student');
   all.push({
     id: e.id, name: e.name, source: e.source, url: e.url,
+    type: e.type || 'hackathon',
     online: e.online, city: e.city || null,
     country: e.online ? null : ci.name, countryCode: e.online ? null : (e.countryCode || null),
     region: e.online ? '线上' : ci.region,
     lat, lng, exact,
     start: e.start, end: e.end, days: durationDays(e.start, e.end),
     cats, prizeUSD: e.prizeUSD || 0, prizeText: e.prizeText || '',
-    org: e.org, regs: e.regs || 0,
+    org: e.org, regs: e.regs || 0, rank: e.rank || null,
   });
 }
 all.sort((a, b) => (a.start || '9999') < (b.start || '9999') ? -1 : 1);

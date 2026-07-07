@@ -4,10 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="dark" />
-<meta name="description" content="全球黑客松地图 · 实时聚合 Devpost / MLH / ETHGlobal / HackerEarth 的真实黑客松，按时间、国家、类别、时长、奖金筛选。" />
-<meta property="og:title" content="Hackathon Atlas · 全球黑客松地图" />
-<meta property="og:description" content="每日自动更新的全球黑客松雷达：世界地图 + 多维筛选。" />
-<title>Hackathon Atlas · 全球黑客松地图</title>
+<meta name="description" content="AI·科技活动地图 · 实时聚合黑客松（Devpost / MLH / ETHGlobal / HackerEarth）、行业大会（Confs.tech）与学术顶会（ccfddl），按时间、类型、国家、类别、时长、奖金筛选。" />
+<meta property="og:title" content="Tech Atlas · AI·科技活动地图" />
+<meta property="og:description" content="每日自动更新的全球科技活动雷达：黑客松 × 行业大会 × 学术顶会，世界地图 + 多维筛选。" />
+<title>Tech Atlas · AI·科技活动地图</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='none' stroke='%2322d3ee' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%2322d3ee'/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
@@ -164,6 +164,11 @@ select.ctl:focus{outline:none; border-color:var(--cyan);}
 .tag.t-game{color:#f0abfc; border-color:rgba(240,171,252,.4);}
 .tag.t-hardware{color:#fdba74; border-color:rgba(253,186,116,.4);}
 .tag.t-security{color:#f87171; border-color:rgba(248,113,113,.4);}
+.tag.t-dev{color:#93c5fd; border-color:rgba(147,197,253,.4);}
+.tag.ty{font-weight:700;}
+.tag.ty-hackathon{color:var(--cyan); border-color:rgba(34,211,238,.5); background:rgba(34,211,238,.07);}
+.tag.ty-conference{color:var(--amber); border-color:rgba(251,191,36,.5); background:rgba(251,191,36,.07);}
+.tag.ty-academic{color:var(--green); border-color:rgba(52,211,153,.5); background:rgba(52,211,153,.07);}
 .empty{color:var(--faint); font-size:12.5px; text-align:center; padding:34px 10px; line-height:2;}
 
 /* 地图区 */
@@ -185,7 +190,9 @@ select.ctl:focus{outline:none; border-color:var(--cyan);}
   box-shadow:0 0 10px rgba(34,211,238,.8), 0 0 22px rgba(34,211,238,.35);
   border:1.5px solid rgba(255,255,255,.75);
 }
-.hmark .pt.fuzzy{background:radial-gradient(circle at 35% 35%, #d5c5ff, var(--violet) 60%); box-shadow:0 0 10px rgba(139,92,246,.8), 0 0 20px rgba(139,92,246,.35);}
+.hmark .pt.ty-conference{background:radial-gradient(circle at 35% 35%, #ffe9b3, var(--amber) 60%); box-shadow:0 0 10px rgba(251,191,36,.8), 0 0 22px rgba(251,191,36,.35);}
+.hmark .pt.ty-academic{background:radial-gradient(circle at 35% 35%, #b9ffe3, var(--green) 60%); box-shadow:0 0 10px rgba(52,211,153,.8), 0 0 22px rgba(52,211,153,.3);}
+.hmark .pt.fuzzy{border-style:dashed; border-color:rgba(255,255,255,.5); opacity:.82;}
 .hmark .pt::after{
   content:""; position:absolute; inset:-7px; border-radius:50%;
   border:1px solid rgba(34,211,238,.45); animation:ring 2.4s ease-out infinite;
@@ -225,7 +232,9 @@ select.ctl:focus{outline:none; border-color:var(--cyan);}
 .legend .li{display:flex; align-items:center; gap:8px;}
 .legend .d{width:10px; height:10px; border-radius:50%; flex:none;}
 .legend .d1{background:var(--cyan); box-shadow:0 0 6px var(--cyan);}
-.legend .d2{background:var(--violet); box-shadow:0 0 6px var(--violet);}
+.legend .d3{background:var(--amber); box-shadow:0 0 6px var(--amber);}
+.legend .d4{background:var(--green); box-shadow:0 0 6px var(--green);}
+.legend .df{background:transparent; border:1.5px dashed rgba(255,255,255,.55); box-shadow:none;}
 .updated{font-family:var(--mono); font-size:10px; color:var(--faint); margin-top:4px;}
 
 /* 移动端 */
@@ -260,8 +269,8 @@ select.ctl:focus{outline:none; border-color:var(--cyan);}
       </svg>
     </div>
     <div>
-      <h1>Hackathon <em>Atlas</em> · 全球黑客松地图</h1>
-      <p>DEVPOST × MLH × ETHGLOBAL × HACKEREARTH · 每日自动更新</p>
+      <h1>Tech <em>Atlas</em> · AI·科技活动地图</h1>
+      <p>黑客松 × 行业大会 × 学术顶会 · 6 源每日自动更新</p>
     </div>
   </div>
   <div class="spacer"></div>
@@ -286,6 +295,11 @@ select.ctl:focus{outline:none; border-color:var(--cyan);}
       <div class="fgroup">
         <div class="flabel">举办时间</div>
         <div class="chips" id="fTime" role="group" aria-label="按时间筛选"></div>
+      </div>
+
+      <div class="fgroup">
+        <div class="flabel">活动类型</div>
+        <div class="chips" id="fType" role="group" aria-label="按活动类型筛选"></div>
       </div>
 
       <div class="fgroup">
@@ -322,10 +336,12 @@ select.ctl:focus{outline:none; border-color:var(--cyan);}
   </aside>
 
   <main class="map-wrap">
-    <div id="map" role="application" aria-label="世界黑客松地图"></div>
+    <div id="map" role="application" aria-label="世界科技活动地图"></div>
     <div class="legend">
-      <div class="li"><span class="d d1"></span>精确城市定位</div>
-      <div class="li"><span class="d d2"></span>国家级近似定位</div>
+      <div class="li"><span class="d d1"></span>黑客松</div>
+      <div class="li"><span class="d d3"></span>行业大会</div>
+      <div class="li"><span class="d d4"></span>学术顶会</div>
+      <div class="li"><span class="d df"></span>虚线 = 国家级近似定位</div>
       <div class="updated" id="updated"></div>
     </div>
   </main>
@@ -340,11 +356,12 @@ select.ctl:focus{outline:none; border-color:var(--cyan);}
 var DATA = window.HACK_DATA || { updated:null, stats:{}, events:[] };
 var EV = DATA.events || [];
 
-var CAT_NAME = { ai:'AI · 机器学习', web3:'Web3 · 区块链', student:'学生 · 校园', social:'社会公益', general:'综合', fintech:'金融科技', game:'游戏', hardware:'硬件 · IoT', security:'安全 · CTF' };
-var SRC_NAME = { devpost:'Devpost', mlh:'MLH', ethglobal:'ETHGlobal', hackerearth:'HackerEarth' };
+var CAT_NAME = { ai:'AI · 机器学习', web3:'Web3 · 区块链', student:'学生 · 校园', social:'社会公益', general:'综合', fintech:'金融科技', game:'游戏', hardware:'硬件 · IoT', security:'安全 · CTF', dev:'开发者 · 工程' };
+var SRC_NAME = { devpost:'Devpost', mlh:'MLH', ethglobal:'ETHGlobal', hackerearth:'HackerEarth', confstech:'Confs.tech', ccfddl:'ccfddl' };
+var TYPE_NAME = { hackathon:'黑客松', conference:'行业大会', academic:'学术顶会' };
 
 // ---------- 状态 ----------
-var state = { q:'', time:'', region:'', country:'', cat:'', dur:'', prize:'' };
+var state = { q:'', time:'', type:'', region:'', country:'', cat:'', dur:'', prize:'' };
 var activeId = null;
 
 // ---------- 时间工具 ----------
@@ -394,6 +411,7 @@ function filtered(){
   return EV.filter(function(e){
     if(q && (e.name+' '+(e.city||'')+' '+(e.country||'')+' '+e.org).toLowerCase().indexOf(q)<0) return false;
     if(!inTime(e, state.time)) return false;
+    if(state.type && e.type!==state.type) return false;
     if(state.region && e.region!==state.region) return false;
     if(state.country && e.country!==state.country) return false;
     if(state.cat && e.cats.indexOf(state.cat)<0) return false;
@@ -424,6 +442,10 @@ function buildFilters(){
     {v:'next', t:'下月', n:cnt(function(e){return inTime(e,'next');})},
     {v:'q3', t:'3个月内', n:cnt(function(e){return inTime(e,'q3');})}
   ], 'time');
+
+  chips(document.getElementById('fType'), [{v:'',t:'全部'}].concat(['hackathon','conference','academic'].map(function(ty){
+    return {v:ty, t:TYPE_NAME[ty], n:cnt(function(e){return e.type===ty;})};
+  })), 'type');
 
   var regions = ['北美','欧洲','亚洲','南美','非洲','大洋洲','线上'].filter(function(r){ return EV.some(function(e){return e.region===r;}); });
   chips(document.getElementById('fRegion'), [{v:'',t:'全部'}].concat(regions.map(function(r){
@@ -479,11 +501,12 @@ var markers = {};
 
 function popHtml(e){
   return '<div class="pop"><h4>'+esc(e.name)+'</h4>'
+    +'<div class="pm">🏷 '+(TYPE_NAME[e.type]||e.type)+(e.rank?' · '+esc(e.rank):'')+'</div>'
     +'<div class="pm">📍 '+esc((e.city?e.city+' · ':'')+(e.country||''))+(e.exact?'':'（国家级定位）')+'</div>'
     +'<div class="pm">🗓 '+fmtRange(e)+(e.days?' · '+e.days+'天':'')+'</div>'
     +(e.prizeUSD>0?'<div class="pm">🏆 奖金池 <b>'+money(e.prizeUSD)+'</b></div>':'')
     +'<div class="pm">📡 '+(SRC_NAME[e.source]||e.source)+(e.regs>0?' · '+e.regs.toLocaleString()+' 人已报名':'')+'</div>'
-    +'<a href="'+esc(e.url)+'" target="_blank" rel="noopener">前往报名 ↗</a></div>';
+    +'<a href="'+esc(e.url)+'" target="_blank" rel="noopener">'+(e.type==='hackathon'?'前往报名':'活动官网')+' ↗</a></div>';
 }
 
 function renderMap(list){
@@ -491,7 +514,7 @@ function renderMap(list){
   list.forEach(function(e){
     if(e.online || e.lat==null) return;
     var m = L.marker([e.lat, e.lng], {
-      icon: L.divIcon({ className:'hmark', html:'<div class="pt'+(e.exact?'':' fuzzy')+'"></div>', iconSize:[14,14], iconAnchor:[7,7] }),
+      icon: L.divIcon({ className:'hmark', html:'<div class="pt ty-'+esc(e.type)+(e.exact?'':' fuzzy')+'"></div>', iconSize:[14,14], iconAnchor:[7,7] }),
       title: e.name
     });
     m.bindPopup(popHtml(e), { maxWidth:280 });
@@ -512,14 +535,15 @@ function cardHtml(e){
     +'<span class="mono"><svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>'+fmtRange(e)+(e.days?' · '+e.days+'天':'')+'</span>'
     +(e.prizeUSD>0?'<span class="prize">🏆 '+money(e.prizeUSD)+'</span>':'')
     +'</div>'
-    +'<div class="tags">'+e.cats.map(function(c){return '<span class="tag t-'+c+'">'+(CAT_NAME[c]||c)+'</span>';}).join('')
+    +'<div class="tags"><span class="tag ty ty-'+esc(e.type)+'">'+(TYPE_NAME[e.type]||e.type)+(e.rank?' '+esc(e.rank):'')+'</span>'
+    +e.cats.map(function(c){return '<span class="tag t-'+c+'">'+(CAT_NAME[c]||c)+'</span>';}).join('')
     +'<span class="tag">'+(SRC_NAME[e.source]||e.source)+'</span></div>'
     +'</div>';
 }
 function renderList(list){
   document.getElementById('cnt').textContent = list.length;
   if(!list.length){
-    listEl.innerHTML = '<div class="empty">这个组合下暂时没有黑客松。<br>试试放宽时间或奖金条件。</div>';
+    listEl.innerHTML = '<div class="empty">这个组合下暂时没有活动。<br>试试放宽时间、类型或奖金条件。</div>';
     return;
   }
   listEl.innerHTML = list.map(cardHtml).join('');
@@ -575,7 +599,7 @@ qEl.addEventListener('input', function(){
   clearTimeout(qT); qT = setTimeout(function(){ state.q = qEl.value.trim(); render(); }, 180);
 });
 document.getElementById('reset').onclick = function(){
-  state = { q:'', time:'', region:'', country:'', cat:'', dur:'', prize:'' };
+  state = { q:'', time:'', type:'', region:'', country:'', cat:'', dur:'', prize:'' };
   qEl.value=''; document.getElementById('fCountry').value='';
   render();
 };
