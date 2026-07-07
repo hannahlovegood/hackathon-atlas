@@ -1,9 +1,9 @@
 {
- "updated": "2026-07-07T09:41:46.939Z",
+ "updated": "2026-07-07T09:46:23.432Z",
  "stats": {
-  "total": 138,
+  "total": 136,
   "onsite": 63,
-  "online": 75,
+  "online": 73,
   "countries": 8
  },
  "events": [
@@ -227,7 +227,7 @@
    "prizeUSD": 2000000,
    "prizeText": "$2,000,000",
    "org": "XPRIZE",
-   "regs": 18114
+   "regs": 18116
   },
   {
    "id": "dp-29843",
@@ -300,7 +300,7 @@
    "prizeUSD": 45000,
    "prizeText": "$45,000",
    "org": "Alibaba Cloud",
-   "regs": 6979
+   "regs": 6980
   },
   {
    "id": "dp-29527",
@@ -666,7 +666,7 @@
    "prizeUSD": 500,
    "prizeText": "$500",
    "org": "BuildBeyond",
-   "regs": 163
+   "regs": 164
   },
   {
    "id": "dp-30472",
@@ -863,7 +863,7 @@
    "prizeUSD": 10000,
    "prizeText": "$10,000",
    "org": "Backblaze",
-   "regs": 632
+   "regs": 633
   },
   {
    "id": "dp-30501",
@@ -887,7 +887,7 @@
    "prizeUSD": 55,
    "prizeText": "$55",
    "org": "high school",
-   "regs": 192
+   "regs": 193
   },
   {
    "id": "dp-30469",
@@ -936,30 +936,6 @@
    "prizeText": "$0",
    "org": "TechieBunnies team",
    "regs": 25
-  },
-  {
-   "id": "he-0-vibecode-arena-fifa-2026-showdown",
-   "name": "VibeCode Arena: FIFA 2026 Showdown",
-   "source": "hackerearth",
-   "url": "https://www.hackerearth.com/challenges/hackathon/vibecode-arena-fifa-2026-showdown/",
-   "online": true,
-   "city": null,
-   "country": null,
-   "countryCode": null,
-   "region": "线上",
-   "lat": null,
-   "lng": null,
-   "exact": false,
-   "start": "2026-06-22",
-   "end": "2026-07-31",
-   "days": 40,
-   "cats": [
-    "general"
-   ],
-   "prizeUSD": 0,
-   "prizeText": "",
-   "org": "HackerEarth",
-   "regs": 0
   },
   {
    "id": "dp-30371",
@@ -1860,30 +1836,6 @@
    "prizeUSD": 0,
    "prizeText": "",
    "org": "MLH",
-   "regs": 0
-  },
-  {
-   "id": "he-1-the-talent-hack-build-compete-get-hired",
-   "name": "The Talent Hack",
-   "source": "hackerearth",
-   "url": "https://www.hackerearth.com/challenges/hackathon/the-talent-hack-build-compete-get-hired/",
-   "online": true,
-   "city": null,
-   "country": null,
-   "countryCode": null,
-   "region": "线上",
-   "lat": null,
-   "lng": null,
-   "exact": false,
-   "start": "2026-07-10",
-   "end": "2026-07-15",
-   "days": 6,
-   "cats": [
-    "general"
-   ],
-   "prizeUSD": 0,
-   "prizeText": "",
-   "org": "HackerEarth",
    "regs": 0
   },
   {
