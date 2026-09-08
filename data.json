@@ -1,9 +1,9 @@
 {
- "updated": "2026-09-06T23:32:10.848Z",
+ "updated": "2026-09-08T00:00:48.804Z",
  "stats": {
   "total": 541,
-  "onsite": 456,
-  "online": 85,
+  "onsite": 455,
+  "online": 86,
   "countries": 50
  },
  "events": [
@@ -57,7 +57,7 @@
    "prizeUSD": 35785,
    "prizeText": "$35,785",
    "org": "Dialogate",
-   "regs": 2018,
+   "regs": 2034,
    "rank": null
   },
   {
@@ -83,7 +83,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "Binnovative",
-   "regs": 238,
+   "regs": 250,
    "rank": null
   },
   {
@@ -109,7 +109,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "TechieBunnies team",
-   "regs": 253,
+   "regs": 255,
    "rank": null
   },
   {
@@ -137,7 +137,7 @@
    "prizeUSD": 17500,
    "prizeText": "$17,500",
    "org": "Rice University",
-   "regs": 393,
+   "regs": 400,
    "rank": null
   },
   {
@@ -163,7 +163,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "STEMise",
-   "regs": 224,
+   "regs": 225,
    "rank": null
   },
   {
@@ -190,7 +190,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "hacktheconcretejungle ",
-   "regs": 53,
+   "regs": 54,
    "rank": null
   },
   {
@@ -216,7 +216,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "LUMA",
-   "regs": 118,
+   "regs": 124,
    "rank": null
   },
   {
@@ -243,7 +243,7 @@
    "prizeUSD": 156525,
    "prizeText": "$156,525",
    "org": "Kang Chiao International School Student ",
-   "regs": 784,
+   "regs": 821,
    "rank": null
   },
   {
@@ -269,7 +269,7 @@
    "prizeUSD": 2944,
    "prizeText": "$2,944",
    "org": "Galuxium",
-   "regs": 590,
+   "regs": 597,
    "rank": null
   },
   {
@@ -296,7 +296,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "nill",
-   "regs": 311,
+   "regs": 316,
    "rank": null
   },
   {
@@ -323,7 +323,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "Evorozen ",
-   "regs": 221,
+   "regs": 228,
    "rank": null
   },
   {
@@ -351,7 +351,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "Student Organization",
-   "regs": 185,
+   "regs": 194,
    "rank": null
   },
   {
@@ -378,7 +378,7 @@
    "prizeUSD": 5000,
    "prizeText": "$5,000",
    "org": "dsmhack",
-   "regs": 37,
+   "regs": 38,
    "rank": null
   },
   {
@@ -404,7 +404,7 @@
    "prizeUSD": 10000,
    "prizeText": "$10,000",
    "org": "CALL-E",
-   "regs": 2891,
+   "regs": 2940,
    "rank": null
   },
   {
@@ -431,7 +431,7 @@
    "prizeUSD": 75000,
    "prizeText": "$75,000",
    "org": "Google",
-   "regs": 9721,
+   "regs": 9875,
    "rank": null
   },
   {
@@ -457,7 +457,7 @@
    "prizeUSD": 740000,
    "prizeText": "$740,000",
    "org": "RevenueCat",
-   "regs": 23932,
+   "regs": 24258,
    "rank": null
   },
   {
@@ -485,7 +485,7 @@
    "prizeUSD": 1247,
    "prizeText": "$1,247",
    "org": "President University",
-   "regs": 281,
+   "regs": 299,
    "rank": null
   },
   {
@@ -511,7 +511,7 @@
    "prizeUSD": 5000,
    "prizeText": "$5,000",
    "org": "CreateHER Fest",
-   "regs": 51,
+   "regs": 53,
    "rank": null
   },
   {
@@ -537,7 +537,7 @@
    "prizeUSD": 38245,
    "prizeText": "$38,245",
    "org": "BioCataalysis",
-   "regs": 382,
+   "regs": 401,
    "rank": null
   },
   {
@@ -563,7 +563,7 @@
    "prizeUSD": 40000,
    "prizeText": "$40,000",
    "org": "Amazon",
-   "regs": 7914,
+   "regs": 8096,
    "rank": null
   },
   {
@@ -589,7 +589,7 @@
    "prizeUSD": 275,
    "prizeText": "$275",
    "org": "Student Organization",
-   "regs": 182,
+   "regs": 193,
    "rank": null
   },
   {
@@ -615,7 +615,7 @@
    "prizeUSD": 33900,
    "prizeText": "$33,900",
    "org": "OSC",
-   "regs": 2885,
+   "regs": 2929,
    "rank": null
   },
   {
@@ -642,7 +642,7 @@
    "prizeUSD": 1750,
    "prizeText": "$1,750",
    "org": "HackAlphaX",
-   "regs": 580,
+   "regs": 611,
    "rank": null
   },
   {
@@ -665,36 +665,10 @@
    "cats": [
     "general"
    ],
-   "prizeUSD": 880,
-   "prizeText": "$880",
+   "prizeUSD": 952,
+   "prizeText": "$952",
    "org": "FirstCommit",
-   "regs": 415,
-   "rank": null
-  },
-  {
-   "id": "dp-31098",
-   "name": "Graphiques Innovation Challenge",
-   "source": "devpost",
-   "url": "https://graphiques-challenge.devpost.com/",
-   "type": "hackathon",
-   "online": true,
-   "city": null,
-   "country": null,
-   "countryCode": null,
-   "region": "线上",
-   "lat": null,
-   "lng": null,
-   "exact": false,
-   "start": "2026-08-21",
-   "end": "2026-09-07",
-   "days": 18,
-   "cats": [
-    "fintech"
-   ],
-   "prizeUSD": 0,
-   "prizeText": "$0",
-   "org": "Hack Club",
-   "regs": 141,
+   "regs": 463,
    "rank": null
   },
   {
@@ -720,7 +694,7 @@
    "prizeUSD": 750,
    "prizeText": "$750",
    "org": "TechZap Club",
-   "regs": 131,
+   "regs": 139,
    "rank": null
   },
   {
@@ -774,7 +748,7 @@
    "prizeUSD": 1710,
    "prizeText": "$1,710",
    "org": "hyperbloom hacks",
-   "regs": 236,
+   "regs": 270,
    "rank": null
   },
   {
@@ -801,7 +775,7 @@
    "prizeUSD": 100,
    "prizeText": "$100",
    "org": "Institute of Engineering & Management",
-   "regs": 224,
+   "regs": 252,
    "rank": null
   },
   {
@@ -828,7 +802,7 @@
    "prizeUSD": 50000,
    "prizeText": "$50,000",
    "org": "nebius",
-   "regs": 2694,
+   "regs": 2901,
    "rank": null
   },
   {
@@ -856,7 +830,7 @@
    "prizeUSD": 20250,
    "prizeText": "$20,250",
    "org": "OpenCV",
-   "regs": 1229,
+   "regs": 1285,
    "rank": null
   },
   {
@@ -883,7 +857,7 @@
    "prizeUSD": 2500,
    "prizeText": "₹ 2,500",
    "org": "RotaractClub of SNSCollege of Technology",
-   "regs": 211,
+   "regs": 231,
    "rank": null
   },
   {
@@ -961,7 +935,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "PropNote AI",
-   "regs": 53,
+   "regs": 55,
    "rank": null
   },
   {
@@ -1013,7 +987,7 @@
    "prizeUSD": 138000,
    "prizeText": "$138,000",
    "org": "Amazon",
-   "regs": 2526,
+   "regs": 3011,
    "rank": null
   },
   {
@@ -1039,7 +1013,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "CyberSyntax Hub",
-   "regs": 71,
+   "regs": 86,
    "rank": null
   },
   {
@@ -1117,7 +1091,7 @@
    "prizeUSD": 1007085,
    "prizeText": "$1,007,085",
    "org": "GatewayGS",
-   "regs": 925,
+   "regs": 988,
    "rank": null
   },
   {
@@ -1143,7 +1117,7 @@
    "prizeUSD": 2000,
    "prizeText": "$2,000",
    "org": "NA",
-   "regs": 188,
+   "regs": 236,
    "rank": null
   },
   {
@@ -1169,7 +1143,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "GatewayGS",
-   "regs": 94,
+   "regs": 99,
    "rank": null
   },
   {
@@ -1222,7 +1196,7 @@
    "prizeUSD": 50000,
    "prizeText": "₹ 50,000",
    "org": "RAAIF",
-   "regs": 25,
+   "regs": 30,
    "rank": null
   },
   {
@@ -1326,7 +1300,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "Jitjai Organization",
-   "regs": 14,
+   "regs": 21,
    "rank": null
   },
   {
@@ -1405,33 +1379,7 @@
    "prizeUSD": 400,
    "prizeText": "$400",
    "org": "The Webb Schools CSC",
-   "regs": 114,
-   "rank": null
-  },
-  {
-   "id": "dp-30942",
-   "name": "Global Psyops Hackathon",
-   "source": "devpost",
-   "url": "https://global-psyops-hackathon.devpost.com/",
-   "type": "hackathon",
-   "online": true,
-   "city": "Distribution Hall",
-   "country": null,
-   "countryCode": null,
-   "region": "线上",
-   "lat": null,
-   "lng": null,
-   "exact": false,
-   "start": "2026-09-04",
-   "end": "2026-09-07",
-   "days": 4,
-   "cats": [
-    "social"
-   ],
-   "prizeUSD": 0,
-   "prizeText": "$0",
-   "org": "Prosocial Engineering",
-   "regs": 9,
+   "regs": 126,
    "rank": null
   },
   {
@@ -1483,7 +1431,7 @@
    "prizeUSD": 2000,
    "prizeText": "$CAD 2,000",
    "org": "Enterprise Software Solutions",
-   "regs": 53,
+   "regs": 65,
    "rank": null
   },
   {
@@ -1507,10 +1455,10 @@
     "ai",
     "social"
    ],
-   "prizeUSD": 1000,
-   "prizeText": "$1,000",
+   "prizeUSD": 0,
+   "prizeText": "$0",
    "org": "ML Empowerment Foundation",
-   "regs": 45,
+   "regs": 58,
    "rank": null
   },
   {
@@ -1537,7 +1485,7 @@
    "prizeUSD": 100,
    "prizeText": "$100",
    "org": "Next Byte Hacks",
-   "regs": 6,
+   "regs": 13,
    "rank": null
   },
   {
@@ -1563,7 +1511,114 @@
    "prizeUSD": 50000,
    "prizeText": "₹ 50,000",
    "org": "hidevs",
-   "regs": 59,
+   "regs": 75,
+   "rank": null
+  },
+  {
+   "id": "dp-31216",
+   "name": "UPAI-Hackdays",
+   "source": "devpost",
+   "url": "https://upai-hackdays.devpost.com/",
+   "type": "hackathon",
+   "online": true,
+   "city": "Virtual",
+   "country": null,
+   "countryCode": null,
+   "region": "线上",
+   "lat": null,
+   "lng": null,
+   "exact": false,
+   "start": "2026-09-07",
+   "end": "2026-09-10",
+   "days": 4,
+   "cats": [
+    "web3"
+   ],
+   "prizeUSD": 0,
+   "prizeText": "$0",
+   "org": "MLH",
+   "regs": 20,
+   "rank": null
+  },
+  {
+   "id": "dp-31259",
+   "name": "Gen Agra",
+   "source": "devpost",
+   "url": "https://gen-agra.devpost.com/",
+   "type": "hackathon",
+   "online": true,
+   "city": "Agra-Delhi Highway",
+   "country": null,
+   "countryCode": null,
+   "region": "线上",
+   "lat": null,
+   "lng": null,
+   "exact": false,
+   "start": "2026-09-07",
+   "end": "2026-09-12",
+   "days": 6,
+   "cats": [
+    "ai",
+    "social"
+   ],
+   "prizeUSD": 0,
+   "prizeText": "₹ 0",
+   "org": "Orange ARM",
+   "regs": 5,
+   "rank": null
+  },
+  {
+   "id": "dp-31260",
+   "name": "Codebox Hacks Makeup",
+   "source": "devpost",
+   "url": "https://codebox-hacks-makeup.devpost.com/",
+   "type": "hackathon",
+   "online": true,
+   "city": null,
+   "country": null,
+   "countryCode": null,
+   "region": "线上",
+   "lat": null,
+   "lng": null,
+   "exact": false,
+   "start": "2026-09-07",
+   "end": "2026-09-09",
+   "days": 3,
+   "cats": [
+    "ai",
+    "social"
+   ],
+   "prizeUSD": 0,
+   "prizeText": "$0",
+   "org": "CodeBox",
+   "regs": 4,
+   "rank": null
+  },
+  {
+   "id": "dp-31285",
+   "name": "PyStorm",
+   "source": "devpost",
+   "url": "https://pystorm.devpost.com/",
+   "type": "hackathon",
+   "online": true,
+   "city": null,
+   "country": null,
+   "countryCode": null,
+   "region": "线上",
+   "lat": null,
+   "lng": null,
+   "exact": false,
+   "start": "2026-09-07",
+   "end": "2026-09-16",
+   "days": 10,
+   "cats": [
+    "ai",
+    "social"
+   ],
+   "prizeUSD": 1000,
+   "prizeText": "$1,000",
+   "org": "python",
+   "regs": 1,
    "rank": null
   },
   {
@@ -1953,7 +2008,7 @@
    "prizeUSD": 49560,
    "prizeText": "$49,560",
    "org": "Lexhack",
-   "regs": 123,
+   "regs": 130,
    "rank": null
   },
   {
@@ -1980,32 +2035,6 @@
    "prizeText": "",
    "org": "MLH",
    "regs": 0,
-   "rank": null
-  },
-  {
-   "id": "dp-30834",
-   "name": "The CAD Challenge 2026",
-   "source": "devpost",
-   "url": "https://the-cad-challenge-2026.devpost.com/",
-   "type": "hackathon",
-   "online": false,
-   "city": "Berkeley",
-   "country": "",
-   "countryCode": null,
-   "region": "其他",
-   "lat": 37.8715,
-   "lng": -122.273,
-   "exact": true,
-   "start": "2026-09-12",
-   "end": "2026-09-14",
-   "days": 3,
-   "cats": [
-    "general"
-   ],
-   "prizeUSD": 750,
-   "prizeText": "$750",
-   "org": "The CAD Challenge",
-   "regs": 54,
    "rank": null
   },
   {
@@ -2058,7 +2087,7 @@
    "prizeUSD": 3000,
    "prizeText": "$3,000",
    "org": "OneAquaHealth",
-   "regs": 672,
+   "regs": 674,
    "rank": null
   },
   {
@@ -2319,7 +2348,7 @@
    "prizeUSD": 309,
    "prizeText": "$309",
    "org": "JHUB Africa",
-   "regs": 63,
+   "regs": 69,
    "rank": null
   },
   {
@@ -2665,7 +2694,7 @@
   },
   {
    "id": "dp-31113",
-   "name": "MLAI Hackathon",
+   "name": "MLAI Hackathon 2026",
    "source": "devpost",
    "url": "https://mlai-hackathon.devpost.com/",
    "type": "hackathon",
@@ -2687,7 +2716,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "Mạng Lưới AI",
-   "regs": 399,
+   "regs": 451,
    "rank": null
   },
   {
@@ -2713,7 +2742,7 @@
    "prizeUSD": 25000,
    "prizeText": "$25,000",
    "org": "General Learning",
-   "regs": 70,
+   "regs": 72,
    "rank": null
   },
   {
@@ -2818,7 +2847,7 @@
    "prizeUSD": 126929,
    "prizeText": "$126,929",
    "org": "Tech Literacy Network",
-   "regs": 106,
+   "regs": 128,
    "rank": null
   },
   {
@@ -3260,7 +3289,7 @@
    "prizeUSD": 70000,
    "prizeText": "$70,000",
    "org": "Recruit Holdings Co., Ltd.",
-   "regs": 61,
+   "regs": 62,
    "rank": null
   },
   {
@@ -4071,7 +4100,7 @@
    "prizeUSD": 8010,
    "prizeText": "€8,010",
    "org": "aiLights Association",
-   "regs": 227,
+   "regs": 237,
    "rank": null
   },
   {
@@ -4333,7 +4362,7 @@
    "prizeUSD": 10000,
    "prizeText": "$10,000",
    "org": "Lincoln Financial Group",
-   "regs": 305,
+   "regs": 306,
    "rank": null
   },
   {
@@ -4356,10 +4385,10 @@
    "cats": [
     "ai"
    ],
-   "prizeUSD": 575,
-   "prizeText": "$575",
+   "prizeUSD": 7640,
+   "prizeText": "$7,640",
    "org": "ForgeHacks",
-   "regs": 79,
+   "regs": 83,
    "rank": null
   },
   {
@@ -4569,7 +4598,7 @@
    "prizeUSD": 3000,
    "prizeText": "$3,000",
    "org": "IEEE Turkey",
-   "regs": 284,
+   "regs": 288,
    "rank": null
   },
   {
@@ -4726,7 +4755,7 @@
    "prizeUSD": 0,
    "prizeText": "$0",
    "org": "United Hackathons",
-   "regs": 93,
+   "regs": 94,
    "rank": null
   },
   {
@@ -10237,33 +10266,7 @@
    "prizeUSD": 17575,
    "prizeText": "$17,575",
    "org": "LaunchHacks",
-   "regs": 1316,
-   "rank": null
-  },
-  {
-   "id": "dp-30671",
-   "name": "SourceHacks V1",
-   "source": "devpost",
-   "url": "https://sourcehacksv1.devpost.com/",
-   "type": "hackathon",
-   "online": true,
-   "city": null,
-   "country": null,
-   "countryCode": null,
-   "region": "线上",
-   "lat": null,
-   "lng": null,
-   "exact": false,
-   "start": "2026-12-11",
-   "end": "2026-12-12",
-   "days": 2,
-   "cats": [
-    "social"
-   ],
-   "prizeUSD": 250,
-   "prizeText": "$250",
-   "org": "SourceHacks",
-   "regs": 53,
+   "regs": 1322,
    "rank": null
   },
   {
@@ -10602,7 +10605,7 @@
    "prizeUSD": 700,
    "prizeText": "$700",
    "org": "Hack United",
-   "regs": 105,
+   "regs": 107,
    "rank": null
   },
   {
@@ -10916,33 +10919,6 @@
    "org": "International Conference on Innovative Data Systems Research",
    "regs": 0,
    "rank": "CCF-B"
-  },
-  {
-   "id": "dp-30463",
-   "name": "DeveloperWeek 2027 Hackathon",
-   "source": "devpost",
-   "url": "https://developerweek-2027-hackathon.devpost.com/",
-   "type": "hackathon",
-   "online": true,
-   "city": null,
-   "country": null,
-   "countryCode": null,
-   "region": "线上",
-   "lat": null,
-   "lng": null,
-   "exact": false,
-   "start": "2027-01-25",
-   "end": "2027-02-11",
-   "days": 18,
-   "cats": [
-    "ai",
-    "hardware"
-   ],
-   "prizeUSD": 0,
-   "prizeText": "$0",
-   "org": "DevNetwork",
-   "regs": 52,
-   "rank": null
   },
   {
    "id": "ccf-aspdac27",
@@ -14119,7 +14095,33 @@
    "prizeUSD": 100000,
    "prizeText": "₹ 100,000",
    "org": "HARD MODE",
-   "regs": 65,
+   "regs": 67,
+   "rank": null
+  },
+  {
+   "id": "dp-31241",
+   "name": "CloudHacks 2026 Singapore",
+   "source": "devpost",
+   "url": "https://cloudhacks-2026-singapore.devpost.com/",
+   "type": "hackathon",
+   "online": true,
+   "city": "Lorong AI @ one-north",
+   "country": null,
+   "countryCode": null,
+   "region": "线上",
+   "lat": null,
+   "lng": null,
+   "exact": false,
+   "start": null,
+   "end": null,
+   "days": null,
+   "cats": [
+    "general"
+   ],
+   "prizeUSD": 0,
+   "prizeText": "$0",
+   "org": "hackclub",
+   "regs": 47,
    "rank": null
   },
   {
